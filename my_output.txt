@@ -1,0 +1,105 @@
+--- T1: 基本操作 (add, get, set, remove, indexOf) ---
+[Initial] Size: 0, IsEmpty: true, Content: []
+[After adds] Size: 3, IsEmpty: false, Content: [Orange, Apple, Banana]
+[get(1)] Result: Apple
+[set(1)] Old: Apple
+[After set] Size: 3, IsEmpty: false, Content: [Orange, Grape, Banana]
+[indexOf("Banana")] Result: 2
+[lastIndexOf("Grape")] Result: 1
+[remove(0)] Removed: Orange
+[After remove(0)] Size: 2, IsEmpty: false, Content: [Grape, Banana]
+[remove(Obj)] Removed: true
+[After remove(Obj)] Size: 1, IsEmpty: false, Content: [Grape]
+[After clear] Size: 0, IsEmpty: true, Content: []
+
+--- T2: コレクション操作 (addAll, removeAll, retainAll) ---
+[Initial addAll] Size: 3, IsEmpty: false, Content: [A, B, C]
+[addAll(1, ...)] Size: 5, IsEmpty: false, Content: [A, X, Y, B, C]
+[contains("Y")] Result: true
+[removeAll] Size: 3, IsEmpty: false, Content: [X, Y, B]
+[retainAll] Size: 2, IsEmpty: false, Content: [X, B]
+
+--- T3: Iterator (next, remove, forEachRemaining) ---
+[Iterator remove 'Two'] Size: 2, IsEmpty: false, Content: [One, Three]
+[forEachRemaining] Three
+[forEachRemaining] Four
+[After forEachRemaining] Size: 3, IsEmpty: false, Content: [One, Three, Four]
+
+--- T4: ListIterator (previous, add, set) ---
+[lit.next()] B
+[ListIterator add] Size: 4, IsEmpty: false, Content: [A, B, B.5, C]
+[lit.previous()] B.5
+[ListIterator set] Size: 4, IsEmpty: false, Content: [A, B, B.changed, C]
+[ListIterator remove] Size: 3, IsEmpty: false, Content: [A, B, C]
+
+--- T5: SubList (親リストへの変更反映) ---
+[Initial] Size: 6, IsEmpty: false, Content: [0, 1, 2, 3, 4, 5]
+[SubList content] Size: 3, IsEmpty: false, Content: [1, 2, 3]
+[Parent after sub.set] Size: 6, IsEmpty: false, Content: [0, 1, Two, 3, 4, 5]
+[Parent after sub.add] Size: 7, IsEmpty: false, Content: [0, 1, One.5, Two, 3, 4, 5]
+[Parent after sub.remove] Size: 6, IsEmpty: false, Content: [0, One.5, Two, 3, 4, 5]
+[Parent after sub.clear] Size: 3, IsEmpty: false, Content: [0, 4, 5]
+
+--- T6: 一括操作 (replaceAll, sort, removeIf) ---
+[replaceAll] Size: 4, IsEmpty: false, Content: [d, a, c, b]
+[sort] Size: 4, IsEmpty: false, Content: [a, b, c, d]
+[removeIf] Size: 3, IsEmpty: false, Content: [a, b, d]
+[Before sub-bulk] Size: 6, IsEmpty: false, Content: [a, b, d, Z, Y, X]
+[After sub.sort] Size: 6, IsEmpty: false, Content: [a, b, d, X, Y, Z]
+
+--- T7: フェイルファスト (ConcurrentModificationException) ---
+[FailFast Iterator] SUCCESS: Caught ConcurrentModificationException
+[FailFast SubList] SUCCESS: Caught ConcurrentModificationException
+[FailFast forEach] SUCCESS: Caught ConcurrentModificationException
+
+--- T8: Spliterator (trySplit, estimateSize) ---
+[s1.estimateSize()] 8
+[s1.estimateSize() after split] 4
+[s2.estimateSize() after split] 4
+[s1.characteristics()] 16464
+a
+[s2.tryAdvance()] true
+[s2.estimateSize()] 3
+
+--- T9: 例外処理 (Bounds, NoSuchElement, IllegalState) ---
+[Exception] Caught get(5)
+[Exception] Caught add(5)
+[Exception] Caught it.next()
+[Exception] Caught it.remove() before next()
+
+--- T10: シリアライズ (writeObject/readObject) ---
+[Original] Size: 3, IsEmpty: false, Content: [Serialize, Me, null]
+[Serialize] Byte size: 55
+[Restored] Size: 3, IsEmpty: false, Content: [Serialize, Me, null]
+[Serialize] Content equals: true
+
+--- T11: コンストラクタ (Collection, initialCapacity) ---
+[From Collection] Size: 2, IsEmpty: false, Content: [One, Two]
+[Constructor] Content equals source: true
+[With Capacity 100] Size: 0, IsEmpty: true, Content: []
+[Constructor] SUCCESS: Caught negative capacity: IllegalArgumentException
+
+--- T12: toArray(T[] a) のテスト ---
+[toArray(small)] Array same object: false
+[toArray(small)] Content: [A, B, C]
+[toArray(exact)] Array same object: true
+[toArray(exact)] Content: [A, B, C]
+[toArray(large)] Array same object: true
+[toArray(large)] Content: [A, B, C, null, Extra2]
+
+--- T13: null 要素のテスト ---
+[add(null)] Size: 3, IsEmpty: false, Content: [A, null, B]
+[contains(null)] true
+[indexOf(null)] 1
+[remove(null)] Size: 2, IsEmpty: false, Content: [A, B]
+[contains(null) after remove] false
+
+--- T14: equals / hashCode のテスト ---
+[equals] 自身との比較: true
+[equals] 標準リストとの比較: true
+[equals] 順序違いとの比較: false
+[equals] null入りリストと標準null入りの比較: true
+[hashCode] 自身のhashCode: 94369
+[hashCode] 標準リストのhashCode: 94369
+[hashCode] 一致確認: true
+[hashCode] null入りリストの一致確認: true
