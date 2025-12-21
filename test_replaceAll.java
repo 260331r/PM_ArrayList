@@ -7,10 +7,11 @@
 
     1回目の実行で，replaceAllの最中にタスクキルをする．
     2回目の実行の最初に整合性を確かめるため，そこでreplaceAllの結果を知ることができる．
+    replaceAllの引数の処理として，1ミリ秒待ってからn = n + 1を実行する
     テスト実行前に，dd if=/dev/zero of=/mnt/nova_disk/data bs=10G count=1を実行している．
 */
 import ourpersist.*;
-import java.util.ArrayList;
+import java.util.ArrayList; // PM_ArrayListを使う場合は，この行をコメントアウトして下さい．
 
 public class test_replaceAll{
     @durableroot private static ArrayList<Integer> list;
