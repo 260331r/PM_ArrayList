@@ -8,7 +8,7 @@
     1回目の実行で，replaceAllの最中にタスクキルをする．
     2回目の実行の最初に整合性を確かめるため，そこでreplaceAllの結果を知ることができる．
     replaceAllの引数の処理として，1ミリ秒待ってからn = n + 1を実行する
-    テスト実行前に，dd if=/dev/zero of=/mnt/nova_disk/data bs=10G count=1を実行している．
+    1回目の実行前に，dd if=/dev/zero of=/mnt/nova_disk/data bs=10G count=1を実行している．
 */
 import ourpersist.*;
 import java.util.ArrayList; // PM_ArrayListを使う場合は，この行をコメントアウトして下さい．
@@ -26,6 +26,7 @@ public class test_replaceAll{
             ClassLoader[] clds = {primeTester.class.getClassLoader()};
             Recovery.recovery(clds);
             System.out.println("復元完了");
+            findBoundary(list);
         }else{
             System.out.println("--- 新規探索のためNVMを初期化します ---");
             Recovery.init();
@@ -34,8 +35,6 @@ public class test_replaceAll{
         if(list == null){
             list = new ArrayList<>();
         }
-
-        findBoundary(list);
         
         // 2回目以降は，メモリ不足でエラーが出ることがある
         System.out.println("--- 要素割り当て中 ---");
@@ -44,19 +43,11 @@ public class test_replaceAll{
         }
 
         System.out.println("\n--- replaceAllが実行されます ---");
-        try{
-            System.out.println("そろそろ始まります");
-            Thread.sleep(1000); 
-            System.out.println("始め!!!!!!");
-        }catch(InterruptedException e){
-            e.printStackTrace();
+        System.out.println("始め!!!!!!");
+        
+        for(int i = 0; i < 100000; i++){
+            list.replaceAll(n -> n + 1);
         }
-        list.replaceAll(n -> {
-            try{
-                Thread.sleep(1); 
-            }catch(InterruptedException e){}
-            return n + 1;
-        });
         System.out.println("終わり!!!!!!");
         // 終わりと表示されるまでに，タスクをkillして下さい
     }
